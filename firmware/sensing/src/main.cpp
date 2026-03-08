@@ -86,7 +86,11 @@ void stopBLE() {
 
   Serial.println("Stopping BLE...");
 
-  BLEDevice::deinit(true);
+  BLEDevice::getAdvertising()->stop();
+
+  if (pServer) {
+    pServer->disconnect(0);
+  }
 
   deviceConnected = false;
 }
