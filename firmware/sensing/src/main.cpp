@@ -22,7 +22,7 @@ int emotionValue = 0;
 
 // ---------------- Timing ----------------
 unsigned long previousMillis = 0;
-unsigned long sampleInterval = 1000;   // monitoring 默认慢采样
+unsigned long sampleInterval = 1000;
 
 // ---------------- States ----------------
 enum DeviceMode {
@@ -32,25 +32,42 @@ enum DeviceMode {
 
 DeviceMode currentMode = MODE_MONITORING;
 
-// 接触检测阈值（需要根据你实际数据微调）
+// 接触检测阈值
 const int CONTACT_THRESHOLD = 2500;
 
 // ---------------- BLE Callbacks ----------------
-class MyServerCallbacks : public BLEServerCallbacks {
+class MyServerCallbacks: public BLEServerCallbacks {
+
   void onConnect(BLEServer* pServer) {
+
     deviceConnected = true;
+
+    Serial.println("Client connected");
   }
 
   void onDisconnect(BLEServer* pServer) {
+
     deviceConnected = false;
+
+    Serial.println("Client disconnected");
+
+    BLEDevice::startAdvertising(); // reconnect 必须
   }
 };
 
-// ---------------- Start BLE ----------------
-void startBLE() {
+// ---------------- Setup ----------------
+void setup() {
 
-  Serial.println("Starting BLE...");
+  Serial.begin(115200);
+  delay(2000);
 
+  Serial.println("Sensing device booting...");
+
+  pinMode(GSR_PIN, INPUT);
+
+  baseline = analogRead(GSR_PIN);
+
+  // -------- BLE 初始化（只一次） --------
   BLEDevice::init("EmoSense");
 
   pServer = BLEDevice::createServer();
@@ -59,9 +76,9 @@ void startBLE() {
   BLEService* pService = pServer->createService(SERVICE_UUID);
 
   pCharacteristic = pService->createCharacteristic(
-    CHARACTERISTIC_UUID,
-    BLECharacteristic::PROPERTY_READ |
-    BLECharacteristic::PROPERTY_NOTIFY
+      CHARACTERISTIC_UUID,
+      BLECharacteristic::PROPERTY_READ |
+      BLECharacteristic::PROPERTY_NOTIFY
   );
 
   pCharacteristic->addDescriptor(new BLE2902());
@@ -79,33 +96,6 @@ void startBLE() {
   BLEDevice::startAdvertising();
 
   Serial.println("BLE advertising started.");
-}
-
-// ---------------- Stop BLE ----------------
-void stopBLE() {
-
-  Serial.println("Stopping BLE...");
-
-  BLEDevice::getAdvertising()->stop();
-
-  if (pServer) {
-    pServer->disconnect(0);
-  }
-
-  deviceConnected = false;
-}
-
-// ---------------- Setup ----------------
-void setup() {
-
-  Serial.begin(115200);
-  delay(2000);
-
-  Serial.println("Sensing device booting...");
-
-  pinMode(GSR_PIN, INPUT);
-
-  baseline = analogRead(GSR_PIN);
 
   currentMode = MODE_MONITORING;
 
@@ -131,7 +121,6 @@ void loop() {
 
       Serial.println(" | Mode: MONITORING");
 
-      // 检测是否有人佩戴（GSR明显下降）
       if (rawGsr < CONTACT_THRESHOLD) {
 
         Serial.println("Contact detected → switching to ACTIVE");
@@ -141,8 +130,6 @@ void loop() {
         baseline = rawGsr;
 
         sampleInterval = 100;
-
-        startBLE();
       }
 
       return;
@@ -183,8 +170,6 @@ void loop() {
       if (rawGsr > CONTACT_THRESHOLD) {
 
         Serial.println("Contact lost → back to MONITORING");
-
-        stopBLE();
 
         currentMode = MODE_MONITORING;
 
