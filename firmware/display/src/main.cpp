@@ -4,180 +4,179 @@
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
 
-// 你可以把服务UUID和特征UUID替换为你的服务器的UUID
+// ---------------- BLE ----------------
 static BLEUUID serviceUUID("72e8ce72-67f1-4114-8412-1b0e1b35e0b1");
 static BLEUUID charUUID("59ce0b83-f1c9-4229-9227-c6bd61ca7797");
 
 static boolean doConnect = false;
 static boolean connected = false;
-static boolean doScan = false;
 static BLERemoteCharacteristic* pRemoteCharacteristic;
 static BLEAdvertisedDevice* myDevice;
 
-// 线序定义
+// ---------------- Device States ----------------
+enum DeviceMode {
+  MODE_SCANNING,
+  MODE_DISPLAYING
+};
+
+DeviceMode currentMode = MODE_SCANNING;
+
+// ---------------- Stepper Motor ----------------
 #define A1 9
 #define A2 10
 #define B1 8
 #define B2 5
 
 int stepIndex = 0;
+int currentStep = 0;
+int targetStep = 0;
 
-// 步进电机的步进序列（半步驱动）
+// emotion 平滑
+float smoothEmotion = 0;
+
 const uint8_t seq[4][4] = {
-  {1, 0, 1, 0},
-  {0, 1, 1, 0},
-  {0, 1, 0, 1},
-  {1, 0, 0, 1}
+  {1,0,1,0},
+  {0,1,1,0},
+  {0,1,0,1},
+  {1,0,0,1}
 };
 
-// 当前步进位置
-int currentStep = 0;
-
-// 目标角度（由 BLE 传入）
-volatile int targetAngle = 0;
-volatile bool needMove = false;
-
-// 通知回调函数
-static void notifyCallback(
-  BLERemoteCharacteristic*,
-  uint8_t* pData,
-  size_t length,
-  bool)
-{
-    if (length == 1) {
-        uint8_t value = pData[0];
-
-        // 映射值到 0-180 度
-        int angle = map(value, 0, 100, 0, 180);
-
-        Serial.print("Received: ");
-        Serial.println(value);
-        Serial.print("Move to angle: ");
-        Serial.println(angle);
-
-        targetAngle = angle;
-        needMove = true;  // 设置标志，表示需要开始移动电机
-    }
-}
-
-// 电机步进函数
+// ---------------- Motor ----------------
 void stepMotor(int dir)
 {
-  stepIndex = (stepIndex + dir + 4) % 4;  // 确保步进序列循环
+  stepIndex = (stepIndex + dir + 4) % 4;
 
   digitalWrite(A1, seq[stepIndex][0]);
   digitalWrite(A2, seq[stepIndex][1]);
   digitalWrite(B1, seq[stepIndex][2]);
   digitalWrite(B2, seq[stepIndex][3]);
 
-  delay(6);  // 控制步进速度
+  delay(8);
 }
 
-// 电机移动到指定角度
-void moveToAngle(int angle)
+// ---------------- BLE Notify ----------------
+static void notifyCallback(
+  BLERemoteCharacteristic*,
+  uint8_t* pData,
+  size_t length,
+  bool)
 {
-  // 将角度映射到步进
-  int steps = map(angle, 0, 180, 0, 2048);  // 假设2048步为一圈
-  int diff = steps - currentStep;
+  if (length == 1) {
 
-  // 计算步进方向
-  int dir = (diff > 0) ? 1 : -1;
+    uint8_t value = pData[0];
 
-  // 移动电机
-  for (int i = 0; i < abs(diff); i++) {
-    stepMotor(dir);
+    // -------- emotion 平滑 --------
+    smoothEmotion = smoothEmotion * 0.7 + value * 0.3;
+
+    int angle = map((int)smoothEmotion, 0, 100, 0, 120);
+
+    Serial.print("Emotion: ");
+    Serial.print(value);
+    Serial.print("  Smoothed: ");
+    Serial.print(smoothEmotion);
+    Serial.print(" → Angle: ");
+    Serial.println(angle);
+
+    // -------- 扩大 step 范围 --------
+    targetStep = map(angle, 0, 120, 80, 720);
   }
-
-  currentStep = steps;  // 更新当前步进位置
 }
 
-// BLE 客户端回调函数
+// ---------------- BLE Client Callbacks ----------------
 class MyClientCallback : public BLEClientCallbacks {
+
   void onConnect(BLEClient* pclient) {}
+
   void onDisconnect(BLEClient* pclient) {
+
+    Serial.println("Disconnected → back to SCANNING");
+
     connected = false;
-    Serial.println("onDisconnect");
+    currentMode = MODE_SCANNING;
   }
 };
 
-// BLE 扫描回调函数
-class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
-  void onResult(BLEAdvertisedDevice advertisedDevice) {
-    Serial.print("BLE Advertised Device found: ");
-    Serial.println(advertisedDevice.toString().c_str());
+// ---------------- BLE Scan Callback ----------------
+class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 
-    // 只连接包含目标服务UUID的设备
-    if (advertisedDevice.haveServiceUUID() && advertisedDevice.isAdvertisingService(serviceUUID)) {
+  void onResult(BLEAdvertisedDevice advertisedDevice) {
+
+    if (advertisedDevice.haveServiceUUID() &&
+        advertisedDevice.isAdvertisingService(serviceUUID)) {
+
+      Serial.println("Sensing device found");
+
       BLEDevice::getScan()->stop();
+
       myDevice = new BLEAdvertisedDevice(advertisedDevice);
+
       doConnect = true;
     }
   }
 };
 
-// 连接到 BLE 服务器
+// ---------------- Connect ----------------
 bool connectToServer() {
-  Serial.print("Forming a connection to ");
-  Serial.println(myDevice->getAddress().toString().c_str());
+
+  Serial.println("Connecting to sensing device...");
 
   BLEClient* pClient = BLEDevice::createClient();
-  Serial.println(" - Created client");
-
   pClient->setClientCallbacks(new MyClientCallback());
 
-  bool connectionResult = pClient->connect(myDevice);
-  if (!connectionResult) {
-    Serial.println(" - Failed to connect to server");
+  if (!pClient->connect(myDevice)) {
+
+    Serial.println("Connection failed");
+
     return false;
   }
 
-  Serial.println(" - Connected to server");
-  pClient->setMTU(517); // 设置客户端请求最大MTU
+  Serial.println("Connected");
 
-  BLERemoteService* pRemoteService = pClient->getService(serviceUUID);
+  BLERemoteService* pRemoteService =
+      pClient->getService(serviceUUID);
+
   if (pRemoteService == nullptr) {
-    Serial.print("Failed to find our service UUID: ");
-    Serial.println(serviceUUID.toString().c_str());
-    pClient->disconnect();
-    return false;
-  }
-  Serial.println(" - Found our service");
 
-  pRemoteCharacteristic = pRemoteService->getCharacteristic(charUUID);
-  if (pRemoteCharacteristic == nullptr) {
-    Serial.print("Failed to find our characteristic UUID: ");
-    Serial.println(charUUID.toString().c_str());
+    Serial.println("Service not found");
+
     pClient->disconnect();
+
     return false;
   }
-  Serial.println(" - Found our characteristic");
+
+  pRemoteCharacteristic =
+      pRemoteService->getCharacteristic(charUUID);
+
+  if (pRemoteCharacteristic == nullptr) {
+
+    Serial.println("Characteristic not found");
+
+    pClient->disconnect();
+
+    return false;
+  }
 
   if (pRemoteCharacteristic->canNotify()) {
+
     pRemoteCharacteristic->registerForNotify(notifyCallback);
   }
 
   connected = true;
+
+  currentMode = MODE_DISPLAYING;
+
+  Serial.println("Entering DISPLAYING mode");
+
   return true;
 }
 
-// 扫描设备并连接
-void checkServerStatus() {
-  Serial.println("Scanning for server...");
-  BLEDevice::getScan()->start(5, false);
-
-  if (doConnect) {
-    if (connectToServer()) {
-      Serial.println("Connected to BLE Server.");
-    } else {
-      Serial.println("Failed to connect.");
-    }
-    doConnect = false;
-  }
-}
-
+// ---------------- Setup ----------------
 void setup() {
+
   Serial.begin(115200);
-  Serial.println("Starting Arduino BLE Client application...");
+
+  Serial.println("Display device booting...");
+
   BLEDevice::init("");
 
   pinMode(A1, OUTPUT);
@@ -186,21 +185,56 @@ void setup() {
   pinMode(B2, OUTPUT);
 
   BLEScan* pBLEScan = BLEDevice::getScan();
-  pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
+
+  pBLEScan->setAdvertisedDeviceCallbacks(
+      new MyAdvertisedDeviceCallbacks());
+
   pBLEScan->setInterval(1349);
   pBLEScan->setWindow(449);
   pBLEScan->setActiveScan(true);
 }
 
+// ---------------- Loop ----------------
 void loop() {
-  if (!connected) {
-    checkServerStatus();
+
+  // ---------- SCANNING ----------
+  if (currentMode == MODE_SCANNING) {
+
+    Serial.println("Scanning for sensing device...");
+
+    BLEDevice::getScan()->start(3, false);
+
+    if (doConnect) {
+
+      if (connectToServer()) {
+
+        Serial.println("Connected to BLE Server");
+      }
+
+      doConnect = false;
+    }
+
+    delay(1000);
   }
 
-  if (needMove) {
-    needMove = false;
-    moveToAngle(targetAngle);
-  }
+  // ---------- DISPLAYING ----------
+  if (currentMode == MODE_DISPLAYING) {
 
-  delay(10);
+    int diff = targetStep - currentStep;
+
+    if (abs(diff) > 4) {
+
+      int dir = (diff > 0) ? 1 : -1;
+
+      // 一次走多步
+      for(int i = 0; i < 8; i++) {
+
+        stepMotor(dir);
+        currentStep += dir;
+        currentStep = constrain(currentStep, 80, 720);
+      }
+    }
+
+    delay(2);
+  }
 }
