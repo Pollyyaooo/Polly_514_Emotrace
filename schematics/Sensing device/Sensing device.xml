@@ -2,14 +2,14 @@
 <export version="E">
   <design>
     <source>/Users/yaoyitong/Documents/Pollyyaooo-Polly_514_Final/schematics/Sensing device/Sensing device.kicad_sch</source>
-    <date>2026-02-04T01:48:26-0800</date>
-    <tool>Eeschema 9.0.5</tool>
+    <date>2026-03-08T14:34:43-0700</date>
+    <tool>Eeschema 9.0.7</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
         <title>Polly Yao_EmoTrace_Sensing Device</title>
         <company/>
-        <rev>1.0</rev>
-        <date>2026-02-01</date>
+        <rev>2.0</rev>
+        <date>2026-02-17</date>
         <source>Sensing device.kicad_sch</source>
         <comment number="1" value=""/>
         <comment number="2" value=""/>
@@ -25,7 +25,7 @@
   </design>
   <components>
     <comp ref="C1">
-      <value>10uF</value>
+      <value>10UF</value>
       <footprint>Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder</footprint>
       <datasheet>~</datasheet>
       <description>Unpolarized capacitor</description>
@@ -43,7 +43,7 @@
       <tstamps>8d76f33c-32da-47db-b300-4c632a866b26</tstamps>
     </comp>
     <comp ref="C2">
-      <value>0.1uF</value>
+      <value>100NF</value>
       <footprint>Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder</footprint>
       <datasheet>~</datasheet>
       <description>Unpolarized capacitor</description>
@@ -61,7 +61,7 @@
       <tstamps>8ee52529-a40c-4951-9670-914a2216de65</tstamps>
     </comp>
     <comp ref="C3">
-      <value>0.1uF</value>
+      <value>100NF</value>
       <footprint>Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder</footprint>
       <datasheet>~</datasheet>
       <description>Unpolarized capacitor</description>
@@ -80,11 +80,11 @@
     </comp>
     <comp ref="J2">
       <value>Grove_GSR</value>
-      <footprint>Connector_JST:JST_PH_S4B-PH-SM4-TB_1x04-1MP_P2.00mm_Horizontal</footprint>
+      <footprint>Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical</footprint>
       <datasheet>~</datasheet>
       <description>Generic connector, single row, 01x04, script generated</description>
       <fields>
-        <field name="Footprint">Connector_JST:JST_PH_S4B-PH-SM4-TB_1x04-1MP_P2.00mm_Horizontal</field>
+        <field name="Footprint">Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical</field>
         <field name="Datasheet">~</field>
         <field name="Description">Generic connector, single row, 01x04, script generated</field>
       </fields>
@@ -116,11 +116,11 @@
     </comp>
     <comp ref="SW1">
       <value>SW_Push</value>
-      <footprint>Button_Switch_SMD:SW_Push_1P1T_NO_E-Switch_TL3301NxxxxxG</footprint>
+      <footprint>Button_Switch_SMD:SW_SPST_EVQP7A</footprint>
       <datasheet>~</datasheet>
       <description>Push button switch, generic, two pins</description>
       <fields>
-        <field name="Footprint">Button_Switch_SMD:SW_Push_1P1T_NO_E-Switch_TL3301NxxxxxG</field>
+        <field name="Footprint">Button_Switch_SMD:SW_SPST_EVQP7A</field>
         <field name="Datasheet">~</field>
         <field name="Description">Push button switch, generic, two pins</field>
       </fields>

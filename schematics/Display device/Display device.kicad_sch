@@ -7,7 +7,7 @@
 	(title_block
 		(title "Polly Yao_EmoTrace_Display Device")
 		(date "2026-02-02")
-		(rev "1.0")
+		(rev "2.0")
 	)
 	(lib_symbols
 		(symbol "Device:C"

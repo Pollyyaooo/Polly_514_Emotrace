@@ -2,8 +2,8 @@
 <export version="E">
   <design>
     <source>/Users/yaoyitong/Documents/Pollyyaooo-Polly_514_Final/schematics/Display device/Display device.kicad_sch</source>
-    <date>2026-02-04T01:42:55-0800</date>
-    <tool>Eeschema 9.0.5</tool>
+    <date>2026-03-08T14:34:17-0700</date>
+    <tool>Eeschema 9.0.7</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
         <title>Polly Yao_EmoTrace_Display Device</title>
@@ -25,7 +25,7 @@
   </design>
   <components>
     <comp ref="C1">
-      <value>100uF</value>
+      <value>100UF</value>
       <footprint>Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder</footprint>
       <datasheet>~</datasheet>
       <description>Unpolarized capacitor</description>
@@ -43,7 +43,7 @@
       <tstamps>449dbec7-6d5f-48eb-b4c5-1bc005271870</tstamps>
     </comp>
     <comp ref="C2">
-      <value>0.1uF</value>
+      <value>100NF</value>
       <footprint>Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder</footprint>
       <datasheet>~</datasheet>
       <description>Unpolarized capacitor</description>
@@ -80,23 +80,23 @@
       <sheetpath names="/" tstamps="/"/>
       <tstamps>f0aff823-bf8f-4700-a61e-306afa5d1a98</tstamps>
     </comp>
-    <comp ref="J1">
-      <value>stepper motor</value>
-      <footprint>Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical</footprint>
-      <datasheet>~</datasheet>
-      <description>Generic connector, single row, 01x04, script generated</description>
+    <comp ref="M1">
+      <value>Stepper_Motor_bipolar</value>
+      <footprint>x27_Footprint:x27_stepper_two_holes</footprint>
+      <datasheet>http://www.infineon.com/dgdl/Application-Note-TLE8110EE_driving_UniPolarStepperMotor_V1.1.pdf?fileId=db3a30431be39b97011be5d0aa0a00b0</datasheet>
+      <description>4-wire bipolar stepper motor</description>
       <fields>
-        <field name="Footprint">Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical</field>
-        <field name="Datasheet">~</field>
-        <field name="Description">Generic connector, single row, 01x04, script generated</field>
+        <field name="Footprint">x27_Footprint:x27_stepper_two_holes</field>
+        <field name="Datasheet">http://www.infineon.com/dgdl/Application-Note-TLE8110EE_driving_UniPolarStepperMotor_V1.1.pdf?fileId=db3a30431be39b97011be5d0aa0a00b0</field>
+        <field name="Description">4-wire bipolar stepper motor</field>
       </fields>
-      <libsource lib="Connector" part="Conn_01x04_Pin" description="Generic connector, single row, 01x04, script generated"/>
+      <libsource lib="Motor" part="Stepper_Motor_bipolar" description="4-wire bipolar stepper motor"/>
       <property name="Sheetname" value="根目录"/>
       <property name="Sheetfile" value="Display device.kicad_sch"/>
-      <property name="ki_keywords" value="connector"/>
-      <property name="ki_fp_filters" value="Connector*:*_1x??_*"/>
+      <property name="ki_keywords" value="bipolar stepper motor"/>
+      <property name="ki_fp_filters" value="PinHeader*P2.54mm*Vertical* TerminalBlock* Motor*"/>
       <sheetpath names="/" tstamps="/"/>
-      <tstamps>5fae1adc-04d1-45af-af68-49a2fc2ae0d7</tstamps>
+      <tstamps>c805fc9f-0b94-4281-91a9-e690af8ad965</tstamps>
     </comp>
     <comp ref="R1">
       <value>330Ω</value>
@@ -190,11 +190,11 @@
     </comp>
     <comp ref="SW1">
       <value>SW_Push</value>
-      <footprint>Button_Switch_SMD:SW_Push_1P1T_NO_E-Switch_TL3301NxxxxxG</footprint>
+      <footprint>Button_Switch_SMD:SW_SPST_EVQP7A</footprint>
       <datasheet>~</datasheet>
       <description>Push button switch, generic, two pins</description>
       <fields>
-        <field name="Footprint">Button_Switch_SMD:SW_Push_1P1T_NO_E-Switch_TL3301NxxxxxG</field>
+        <field name="Footprint">Button_Switch_SMD:SW_SPST_EVQP7A</field>
         <field name="Datasheet">~</field>
         <field name="Description">Push button switch, generic, two pins</field>
       </fields>
@@ -293,26 +293,6 @@
         <pin num="2" name="" type="passive"/>
       </pins>
     </libpart>
-    <libpart lib="Connector" part="Conn_01x04_Pin">
-      <description>Generic connector, single row, 01x04, script generated</description>
-      <docs>~</docs>
-      <footprints>
-        <fp>Connector*:*_1x??_*</fp>
-      </footprints>
-      <fields>
-        <field name="Reference">J1</field>
-        <field name="Value">Conn_01x04_Pin</field>
-        <field name="Footprint"/>
-        <field name="Datasheet">~</field>
-        <field name="Description">Generic connector, single row, 01x04, script generated</field>
-      </fields>
-      <pins>
-        <pin num="1" name="Pin_1" type="passive"/>
-        <pin num="2" name="Pin_2" type="passive"/>
-        <pin num="3" name="Pin_3" type="passive"/>
-        <pin num="4" name="Pin_4" type="passive"/>
-      </pins>
-    </libpart>
     <libpart lib="Device" part="C">
       <description>Unpolarized capacitor</description>
       <docs>~</docs>
@@ -397,6 +377,28 @@
         <pin num="16" name="-BATT" type="bidirectional"/>
       </pins>
     </libpart>
+    <libpart lib="Motor" part="Stepper_Motor_bipolar">
+      <description>4-wire bipolar stepper motor</description>
+      <docs>http://www.infineon.com/dgdl/Application-Note-TLE8110EE_driving_UniPolarStepperMotor_V1.1.pdf?fileId=db3a30431be39b97011be5d0aa0a00b0</docs>
+      <footprints>
+        <fp>PinHeader*P2.54mm*Vertical*</fp>
+        <fp>TerminalBlock*</fp>
+        <fp>Motor*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">M</field>
+        <field name="Value">Stepper_Motor_bipolar</field>
+        <field name="Footprint"/>
+        <field name="Datasheet">http://www.infineon.com/dgdl/Application-Note-TLE8110EE_driving_UniPolarStepperMotor_V1.1.pdf?fileId=db3a30431be39b97011be5d0aa0a00b0</field>
+        <field name="Description">4-wire bipolar stepper motor</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="-" type="passive"/>
+        <pin num="3" name="" type="passive"/>
+        <pin num="4" name="" type="passive"/>
+      </pins>
+    </libpart>
     <libpart lib="Switch" part="SW_Push">
       <description>Push button switch, generic, two pins</description>
       <docs>~</docs>
@@ -414,14 +416,14 @@
     </libpart>
   </libparts>
   <libraries>
-    <library logical="Connector">
-      <uri>/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols//Connector.kicad_sym</uri>
-    </library>
     <library logical="Device">
       <uri>/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols//Device.kicad_sym</uri>
     </library>
     <library logical="GIX_ESP32">
       <uri>/Users/yaoyitong/Documents/Pollyyaooo-Polly_514_Final/kicad_libs/XIAO_ESP32/GIX_ESP32.kicad_sym</uri>
+    </library>
+    <library logical="Motor">
+      <uri>/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols//Motor.kicad_sym</uri>
     </library>
     <library logical="Switch">
       <uri>/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols//Switch.kicad_sym</uri>
@@ -469,20 +471,20 @@
       <node ref="D1" pin="2" pinfunction="A" pintype="passive"/>
       <node ref="R1" pin="1" pintype="passive"/>
     </net>
-    <net code="10" name="Net-(J1-Pin_1)" class="Default">
-      <node ref="J1" pin="1" pinfunction="Pin_1" pintype="passive"/>
-      <node ref="R2" pin="2" pintype="passive"/>
-    </net>
-    <net code="11" name="Net-(J1-Pin_2)" class="Default">
-      <node ref="J1" pin="2" pinfunction="Pin_2" pintype="passive"/>
+    <net code="10" name="Net-(M1--)" class="Default">
+      <node ref="M1" pin="2" pinfunction="-" pintype="passive"/>
       <node ref="R3" pin="2" pintype="passive"/>
     </net>
-    <net code="12" name="Net-(J1-Pin_3)" class="Default">
-      <node ref="J1" pin="3" pinfunction="Pin_3" pintype="passive"/>
+    <net code="11" name="Net-(M1-Pad1)" class="Default">
+      <node ref="M1" pin="1" pintype="passive"/>
+      <node ref="R2" pin="2" pintype="passive"/>
+    </net>
+    <net code="12" name="Net-(M1-Pad3)" class="Default">
+      <node ref="M1" pin="3" pintype="passive"/>
       <node ref="R4" pin="2" pintype="passive"/>
     </net>
-    <net code="13" name="Net-(J1-Pin_4)" class="Default">
-      <node ref="J1" pin="4" pinfunction="Pin_4" pintype="passive"/>
+    <net code="13" name="Net-(M1-Pad4)" class="Default">
+      <node ref="M1" pin="4" pintype="passive"/>
       <node ref="R5" pin="2" pintype="passive"/>
     </net>
     <net code="14" name="unconnected-(U1-3V3-Pad12)" class="Default">

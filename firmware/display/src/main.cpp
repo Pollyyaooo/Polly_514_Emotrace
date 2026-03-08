@@ -13,6 +13,12 @@ static boolean connected = false;
 static BLERemoteCharacteristic* pRemoteCharacteristic;
 static BLEAdvertisedDevice* myDevice;
 
+// ---------------- LED ----------------
+#define LED_PIN D0
+
+unsigned long ledTimer = 0;
+bool ledState = false;
+
 // ---------------- Device States ----------------
 enum DeviceMode {
   MODE_SCANNING,
@@ -31,7 +37,6 @@ int stepIndex = 0;
 int currentStep = 0;
 int targetStep = 0;
 
-// emotion 平滑
 float smoothEmotion = 0;
 
 const uint8_t seq[4][4] = {
@@ -40,6 +45,24 @@ const uint8_t seq[4][4] = {
   {0,1,0,1},
   {1,0,0,1}
 };
+
+// ---------------- LED Update ----------------
+void updateLED() {
+
+  if (currentMode == MODE_DISPLAYING && connected) {
+    digitalWrite(LED_PIN, HIGH); // 常亮
+    return;
+  }
+
+  unsigned long interval = (currentMode == MODE_SCANNING) ? 1000 : 300;
+
+  if (millis() - ledTimer > interval) {
+
+    ledTimer = millis();
+    ledState = !ledState;
+    digitalWrite(LED_PIN, ledState);
+  }
+}
 
 // ---------------- Motor ----------------
 void stepMotor(int dir)
@@ -65,7 +88,6 @@ static void notifyCallback(
 
     uint8_t value = pData[0];
 
-    // -------- emotion 平滑 --------
     smoothEmotion = smoothEmotion * 0.7 + value * 0.3;
 
     int angle = map((int)smoothEmotion, 0, 100, 0, 120);
@@ -77,7 +99,6 @@ static void notifyCallback(
     Serial.print(" → Angle: ");
     Serial.println(angle);
 
-    // -------- 扩大 step 范围 --------
     targetStep = map(angle, 0, 120, 80, 720);
   }
 }
@@ -184,6 +205,8 @@ void setup() {
   pinMode(B1, OUTPUT);
   pinMode(B2, OUTPUT);
 
+  pinMode(LED_PIN, OUTPUT);
+
   BLEScan* pBLEScan = BLEDevice::getScan();
 
   pBLEScan->setAdvertisedDeviceCallbacks(
@@ -196,6 +219,8 @@ void setup() {
 
 // ---------------- Loop ----------------
 void loop() {
+
+  updateLED();
 
   // ---------- SCANNING ----------
   if (currentMode == MODE_SCANNING) {
@@ -226,7 +251,6 @@ void loop() {
 
       int dir = (diff > 0) ? 1 : -1;
 
-      // 一次走多步
       for(int i = 0; i < 8; i++) {
 
         stepMotor(dir);
