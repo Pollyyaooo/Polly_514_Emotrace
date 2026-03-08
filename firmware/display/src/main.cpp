@@ -19,6 +19,8 @@ static BLEAdvertisedDevice* myDevice;
 unsigned long ledTimer = 0;
 bool ledState = false;
 
+unsigned long lastNotifyTime = 0;
+
 // ---------------- Device States ----------------
 enum DeviceMode {
   MODE_SCANNING,
@@ -49,17 +51,18 @@ const uint8_t seq[4][4] = {
 // ---------------- LED Update ----------------
 void updateLED() {
 
-  if (currentMode == MODE_DISPLAYING && connected) {
-    digitalWrite(LED_PIN, HIGH); // 常亮
+  // 最近1.5秒有收到数据 → 常亮
+  if (millis() - lastNotifyTime < 1500) {
+    digitalWrite(LED_PIN, HIGH);
     return;
   }
 
-  unsigned long interval = (currentMode == MODE_SCANNING) ? 1000 : 300;
-
-  if (millis() - ledTimer > interval) {
+  // 否则慢闪
+  if (millis() - ledTimer > 1000) {
 
     ledTimer = millis();
     ledState = !ledState;
+
     digitalWrite(LED_PIN, ledState);
   }
 }
@@ -74,7 +77,7 @@ void stepMotor(int dir)
   digitalWrite(B1, seq[stepIndex][2]);
   digitalWrite(B2, seq[stepIndex][3]);
 
-  delay(8);
+  delay(6);
 }
 
 // ---------------- BLE Notify ----------------
@@ -86,6 +89,8 @@ static void notifyCallback(
 {
   if (length == 1) {
 
+    lastNotifyTime = millis();
+
     uint8_t value = pData[0];
 
     smoothEmotion = smoothEmotion * 0.7 + value * 0.3;
@@ -94,7 +99,7 @@ static void notifyCallback(
 
     Serial.print("Emotion: ");
     Serial.print(value);
-    Serial.print("  Smoothed: ");
+    Serial.print(" Smoothed: ");
     Serial.print(smoothEmotion);
     Serial.print(" → Angle: ");
     Serial.println(angle);
@@ -168,22 +173,12 @@ bool connectToServer() {
   pRemoteCharacteristic =
       pRemoteService->getCharacteristic(charUUID);
 
-  if (pRemoteCharacteristic == nullptr) {
-
-    Serial.println("Characteristic not found");
-
-    pClient->disconnect();
-
-    return false;
-  }
-
   if (pRemoteCharacteristic->canNotify()) {
 
     pRemoteCharacteristic->registerForNotify(notifyCallback);
   }
 
   connected = true;
-
   currentMode = MODE_DISPLAYING;
 
   Serial.println("Entering DISPLAYING mode");
@@ -225,8 +220,6 @@ void loop() {
   // ---------- SCANNING ----------
   if (currentMode == MODE_SCANNING) {
 
-    Serial.println("Scanning for sensing device...");
-
     BLEDevice::getScan()->start(3, false);
 
     if (doConnect) {
@@ -239,7 +232,7 @@ void loop() {
       doConnect = false;
     }
 
-    delay(1000);
+    delay(100);
   }
 
   // ---------- DISPLAYING ----------
@@ -247,18 +240,14 @@ void loop() {
 
     int diff = targetStep - currentStep;
 
-    if (abs(diff) > 4) {
+    if (abs(diff) > 1) {
 
       int dir = (diff > 0) ? 1 : -1;
 
-      for(int i = 0; i < 8; i++) {
+      stepMotor(dir);
+      currentStep += dir;
 
-        stepMotor(dir);
-        currentStep += dir;
-        currentStep = constrain(currentStep, 80, 720);
-      }
+      currentStep = constrain(currentStep, 80, 720);
     }
-
-    delay(2);
   }
 }
