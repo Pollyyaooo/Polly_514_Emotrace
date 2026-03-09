@@ -20,7 +20,8 @@ The system consists of two physically separated devices connected wirelessly via
 This separation allows the relationship between the person being sensed and the person observing the display to remain flexible. They can be the same person or different people. In this way, emotional states are externalized as a physical trace that can be noticed and reflected upon.
 
 ## Working Video
-upcoming soon!
+
+[Watch the demo video](https://drive.google.com/file/d/1t5GnzGR31K_5sYIAPt7pJoVDXnYhjY41/view?usp=sharing)
 
 ## System Architecture
 
