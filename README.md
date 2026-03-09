@@ -17,33 +17,60 @@ EmoTrace measures physiological arousal through galvanic skin response (GSR) and
 
 The system consists of two physically separated devices connected wirelessly via BLE: a sensing device, which captures and processes physiological signals, and a display device, which translates these signals into slow mechanical movement.
 
+![detailed devices](assets/detailed_devices.png)
 This separation allows the relationship between the person being sensed and the person observing the display to remain flexible. They can be the same person or different people. In this way, emotional states are externalized as a physical trace that can be noticed and reflected upon.
 
-
+## Working Video
+upcoming soon!
 
 ## System Architecture
 
 ![System Architecture](assets/system_architecture.png)
 
-**Sensing Device**
-- Captures electrodermal activity via finger electrodes and a GSR sensor module
-- Performs basic digital signal processing (filtering, baseline normalization)
-- Transmits a continuous arousal indicator via BLE
+# SENSING DEVICE
+## BOM
+- 1 * [XIAO ESP32S3](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/113991054/16652880?gclsrc=aw.ds&gad_source=1&gad_campaignid=20243136172&gbraid=0AAAAADrbLljlYbHqSh6BivUkmcKZk_tfR&gclid=Cj0KCQiA2bTNBhDjARIsAK89wlEAbbqQBA1uiTFchNcTVx1v-IYc5QwWnkXJ3tXnoyRxEMDE1-QkA1gaAj_BEALw_wcB)
+- 1 * [1000mAh Lipo battery](https://www.digikey.com/en/products/detail/adafruit-industries-llc/258/5054544?gclsrc=aw.ds&gad_source=1&gad_campaignid=20243136172&gbraid=0AAAAADrbLljrZZ4GojVo81Kz5tQ6T5lew&gclid=Cj0KCQiA2bTNBhDjARIsAK89wlHKBVgdu98wbLI4JhGyajQuXtPkNRFbFXGNXkboarXHAsTlsZbrKu0aAoZMEALw_wcB)
+- 1 * [Grove GSR Sensor](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/101020052/5488086?gclsrc=aw.ds&gad_source=1&gad_campaignid=20243136172&gbraid=0AAAAADrbLljrZZ4GojVo81Kz5tQ6T5lew&gclid=Cj0KCQiA2bTNBhDjARIsAK89wlEdbELj8x1JB5SEK7N4LNacQjjan1omI9O5Sp8hX23WNFHvLMMLuBQaAk0WEALw_wcB)
+- 1 * [SPST Round Push Button Switch](https://www.walmart.com/ip/SPST-MOMENTARY-ON-PUSH-BUTTON-SWITCH-ROUND/166980349?wmlspartner=wlpa&selectedSellerId=101038392)
+- SMD resistors and capacitors
+- Several JST connectors
+- 3D printing enclosure
 
-**Display Device**
-- Receives arousal data wirelessly
-- Drives a stepper-motor-based gauge needle as the primary expressive output
-- Provides minimal user input and status indication
-- Is implemented on a custom-designed PCB
+## Schematic Diagram
+![sensor_schematic](assets/sensor_schematic.png)
 
-## Battery Estimation
+## Gallery
+![sensing_1](assets/sensing_1.png)
 
-### Display Device
+## Details
+upcoming soon!
+
+# DISPLAY DEVICE
+## BOM
+- 1 * [XIAO ESP32S3](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/113991054/16652880?gclsrc=aw.ds&gad_source=1&gad_campaignid=20243136172&gbraid=0AAAAADrbLljlYbHqSh6BivUkmcKZk_tfR&gclid=Cj0KCQiA2bTNBhDjARIsAK89wlEAbbqQBA1uiTFchNcTVx1v-IYc5QwWnkXJ3tXnoyRxEMDE1-QkA1gaAj_BEALw_wcB)
+- 1 * [820mAh Lipo battery](https://www.digikey.com/en/products/detail/adafruit-industries-llc/258/5054544?gclsrc=aw.ds&gad_source=1&gad_campaignid=20243136172&gbraid=0AAAAADrbLljrZZ4GojVo81Kz5tQ6T5lew&gclid=Cj0KCQiA2bTNBhDjARIsAK89wlHKBVgdu98wbLI4JhGyajQuXtPkNRFbFXGNXkboarXHAsTlsZbrKu0aAoZMEALw_wcB)
+- 1 * [Stepper motor gauge](https://www.adafruit.com/product/2424)
+- 1 * [SPST Round Push Button Switch](https://www.walmart.com/ip/SPST-MOMENTARY-ON-PUSH-BUTTON-SWITCH-ROUND/166980349?wmlspartner=wlpa&selectedSellerId=101038392)
+- SMD leds,resistors and capacitors
+- 3D printing enclosure
+
+## Schematic Diagram
+![display_schematic](assets/display_schematic_1.png)
+
+## Gallery
+![display_1](assets/display_1.png)
+
+## Details
+
+# BATTERY CONSIDERATIONS
+
+## Display Device
 Spreadsheet link:  
 https://1drv.ms/x/c/3520740a59bca320/IQBtffllcoQcSJlxG03brPWNAZ11j2MDRlCTxOjXR5vgqAk?e=tpQcXu
 
-
-### Sensing Device
+## Sensing Device
 Spreadsheet link:  
 https://1drv.ms/x/c/3520740a59bca320/IQDMDjtJkVfMQYsOUzpoie-YAZGBVunHImL63yKkG8l4-dY?e=yHCJq8
 
+# BUDGET SUMMARY
