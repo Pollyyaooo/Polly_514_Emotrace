@@ -17,7 +17,6 @@ EmoTrace measures physiological arousal through galvanic skin response (GSR) and
 
 The system consists of two physically separated devices connected wirelessly via BLE: a sensing device, which captures and processes physiological signals, and a display device, which translates these signals into slow mechanical movement.
 
-![detailed devices](assets/detailed_devices.png)
 This separation allows the relationship between the person being sensed and the person observing the display to remain flexible. They can be the same person or different people. In this way, emotional states are externalized as a physical trace that can be noticed and reflected upon.
 
 ## Working Video
@@ -42,6 +41,7 @@ upcoming soon!
 
 ## Gallery
 ![sensing_1](assets/sensing_1.png)
+![sensing_2](assets/sensing_2.png)
 
 
 # DISPLAY DEVICE
@@ -58,7 +58,7 @@ upcoming soon!
 
 ## Gallery
 ![display_1](assets/display_1.png)
-
+![display_2](assets/display_2.png)
 
 # BATTERY CONSIDERATIONS
 Each device is powered by a LiPo battery with __a physical switch__ that can completely cut power to the ESP32, while __the onboard charging circuit__ allows the ESP32 to recharge the battery via USB; additionally, both devices implement __multiple operating states__ (off, monitoring/active for sensing and off, scanning/displaying for display) with light-sleep behavior to minimize continuous power consumption.
