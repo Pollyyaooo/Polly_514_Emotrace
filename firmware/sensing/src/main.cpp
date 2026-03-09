@@ -19,6 +19,7 @@ bool deviceConnected = false;
 int rawGsr = 0;
 int baseline = 0;
 int emotionValue = 0;
+float smoothEmotion = 0;
 
 // ---------------- Timing ----------------
 unsigned long previousMillis = 0;
@@ -129,7 +130,7 @@ void loop() {
 
         baseline = rawGsr;
 
-        sampleInterval = 100;
+        sampleInterval = 50;
       }
 
       return;
@@ -139,12 +140,17 @@ void loop() {
     if (currentMode == MODE_ACTIVE) {
 
       // baseline slowly adapts
-      baseline = baseline * 0.995 + rawGsr * 0.005;
+      baseline = baseline * 0.999 + rawGsr * 0.001;
 
       int delta = abs(rawGsr - baseline);
+      if (delta < 5) delta = 0;
 
-      emotionValue = map(delta, 0, 600, 0, 100);
-      emotionValue = constrain(emotionValue, 0, 100);
+      int rawEmotion = map(delta, 0, 250, 0, 100);
+      rawEmotion = constrain(rawEmotion, 0, 100);
+
+      smoothEmotion = smoothEmotion * 0.8 + rawEmotion * 0.2;
+
+      emotionValue = (int)smoothEmotion;
 
       Serial.print(" | Baseline: ");
       Serial.print(baseline);

@@ -51,14 +51,14 @@ const uint8_t seq[4][4] = {
 // ---------------- LED Update ----------------
 void updateLED() {
 
-  // 最近1.5秒有收到数据 → 常亮
-  if (millis() - lastNotifyTime < 1500) {
+  // 最近0.5秒有收到数据 → 常亮
+  if (millis() - lastNotifyTime < 500) {
     digitalWrite(LED_PIN, HIGH);
     return;
   }
 
   // 否则慢闪
-  if (millis() - ledTimer > 1000) {
+  if (millis() - ledTimer > 100) {
 
     ledTimer = millis();
     ledState = !ledState;
@@ -93,9 +93,9 @@ static void notifyCallback(
 
     uint8_t value = pData[0];
 
-    smoothEmotion = smoothEmotion * 0.7 + value * 0.3;
+    smoothEmotion = smoothEmotion * 0.85 + value * 0.15;
 
-    int angle = map((int)smoothEmotion, 0, 100, 0, 120);
+    int angle = map((int)smoothEmotion, 0, 100, -60, 60);
 
     Serial.print("Emotion: ");
     Serial.print(value);
@@ -104,7 +104,7 @@ static void notifyCallback(
     Serial.print(" → Angle: ");
     Serial.println(angle);
 
-    targetStep = map(angle, 0, 120, 80, 720);
+    targetStep = map(angle, -60, 60, 80, 420);
   }
 }
 
@@ -190,8 +190,9 @@ bool connectToServer() {
 void setup() {
 
   Serial.begin(115200);
-
+  delay(1000);
   Serial.println("Display device booting...");
+
 
   BLEDevice::init("");
 
@@ -201,6 +202,9 @@ void setup() {
   pinMode(B2, OUTPUT);
 
   pinMode(LED_PIN, OUTPUT);
+
+  currentStep = 250;
+  targetStep = 250;
 
   BLEScan* pBLEScan = BLEDevice::getScan();
 
@@ -240,14 +244,16 @@ void loop() {
 
     int diff = targetStep - currentStep;
 
-    if (abs(diff) > 1) {
+    if (abs(diff) > 10) {
 
       int dir = (diff > 0) ? 1 : -1;
 
+      for(int i=0;i<3;i++) {
       stepMotor(dir);
       currentStep += dir;
+     }
 
-      currentStep = constrain(currentStep, 80, 720);
+      currentStep = constrain(currentStep, 80, 420);
     }
   }
 }
