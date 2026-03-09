@@ -43,8 +43,6 @@ upcoming soon!
 ## Gallery
 ![sensing_1](assets/sensing_1.png)
 
-## Details
-upcoming soon!
 
 # DISPLAY DEVICE
 ## BOM
@@ -61,8 +59,6 @@ upcoming soon!
 ## Gallery
 ![display_1](assets/display_1.png)
 
-## Details
-upcoming soon!
 
 # BATTERY CONSIDERATIONS
 Each device is powered by a LiPo battery with __a physical switch__ that can completely cut power to the ESP32, while __the onboard charging circuit__ allows the ESP32 to recharge the battery via USB; additionally, both devices implement __multiple operating states__ (off, monitoring/active for sensing and off, scanning/displaying for display) with light-sleep behavior to minimize continuous power consumption.
@@ -82,6 +78,13 @@ Spreadsheet link:
 https://1drv.ms/x/c/3520740a59bca320/IQBtffllcoQcSJlxG03brPWNAZ11j2MDRlCTxOjXR5vgqAk?e=tpQcXu
 
 # BUDGET SUMMARY
+| Component | Price |
+|-----------|-------|
+| Grove GSR Module | $32.99 / $36.69 |
+| CQRobot JST PH 2.0 mm Pitch Connector Kit | $6.99 / $7.71 |
+| EVQ-P7A01P | $0.56 |
+| ESP32C3 | $4.99 |
+| **Total** | **$49.95** |
 
 # FUTURE WORK
 - Improved enclosure and interaction design
