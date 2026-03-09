@@ -62,15 +62,36 @@ upcoming soon!
 ![display_1](assets/display_1.png)
 
 ## Details
+upcoming soon!
 
 # BATTERY CONSIDERATIONS
-
-## Display Device
-Spreadsheet link:  
-https://1drv.ms/x/c/3520740a59bca320/IQBtffllcoQcSJlxG03brPWNAZ11j2MDRlCTxOjXR5vgqAk?e=tpQcXu
+Each device is powered by a LiPo battery with __a physical switch__ that can completely cut power to the ESP32, while __the onboard charging circuit__ allows the ESP32 to recharge the battery via USB; additionally, both devices implement __multiple operating states__ (off, monitoring/active for sensing and off, scanning/displaying for display) with light-sleep behavior to minimize continuous power consumption.
 
 ## Sensing Device
+![batterysensing_1](assets/sensing_battery_1.png)
+![batterysensing_2](assets/sensing_battery_2.png)
+
 Spreadsheet link:  
 https://1drv.ms/x/c/3520740a59bca320/IQDMDjtJkVfMQYsOUzpoie-YAZGBVunHImL63yKkG8l4-dY?e=yHCJq8
 
+## Display Device
+![batterydisplay_1](assets/display_battery_1.png)
+![batterydisplay_2](assets/display_battery_2.png)
+
+Spreadsheet link:  
+https://1drv.ms/x/c/3520740a59bca320/IQBtffllcoQcSJlxG03brPWNAZ11j2MDRlCTxOjXR5vgqAk?e=tpQcXu
+
 # BUDGET SUMMARY
+
+# FUTURE WORK
+- Improved enclosure and interaction design
+Develop a more refined enclosure with better integration of the charging port, button, and LED indicators, moving beyond the current PCB housing toward a more intentional human–device interaction.
+
+- Multi-sensor emotional sensing
+Incorporate additional physiological sensors to capture emotional states from multiple signals rather than relying solely on GSR.
+
+- More robust signal processing
+Improve data processing and filtering methods so that emotional changes are translated into clearer and more stable physical motion.
+
+- Cost optimization
+Explore alternative sourcing platforms to reduce the overall hardware cost of the system.
