@@ -1,26 +1,25 @@
 # EmoTrace
 #### MSTI TECHIN 514 Final Project           
 #### 01/06/2026-03/06/2026
-
-
-## Project Overview
-
-This project investigates emotion sensing as a process of externalization rather than interpretation.
-It measures physiological arousal through galvanic skin response (GSR) and expresses it using a
-stepper-motor-driven physical needle display.
-
-Instead of identifying discrete emotions or presenting numerical readouts, the system focuses on
-how affective states unfold over time. Changes in arousal are rendered as continuous physical
-motion, allowing inertia, gradual transitions, and recovery to remain visible rather than being
-collapsed into instantaneous values.
-
-The project is composed of two physically separated devices: a sensing device and a display device,
-connected wirelessly via BLE. The sensing device captures and processes physiological signals, while
-the display device externalizes these signals as a slow, glanceable, and non-intrusive physical
-artifact. Through this separation, the project explores how emotional states can be felt,
-noticed, and reflected upon, without being classified or explained away.
-
 ![overview](assets/overview.png)
+
+# OVERVIEW
+## One Sentence Explanation
+EmoTrace uses GSR to sense physiological arousal and express a person’s current emotional state in real time.
+
+## Problem being Solved
+Emotion is a continuously changing internal state, but it is difficult to observe directly. Most of the time, we only understand our emotions afterward, through memory or language, rather than seeing how they change in the moment.
+
+If emotional states could be __externalized__, they might become something that both the individual and others can notice in real time.
+
+## The Proposed Solution
+EmoTrace measures physiological arousal through galvanic skin response (GSR) and expresses these changes using a stepper-motor-driven physical needle.
+
+The system consists of two physically separated devices connected wirelessly via BLE: a sensing device, which captures and processes physiological signals, and a display device, which translates these signals into slow mechanical movement.
+
+This separation allows the relationship between the person being sensed and the person observing the display to remain flexible. They can be the same person or different people. In this way, emotional states are externalized as a physical trace that can be noticed and reflected upon.
+
+
 
 ## System Architecture
 
